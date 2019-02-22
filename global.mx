@@ -1,0 +1,4 @@
+global DEVOPSBIN=~/.murex_modules/devops/bin
+global DEVOPSVERSIONED=~/.murex_modules/devops/versioned
+
+export PATH=$PATH:$DEVOPSBIN

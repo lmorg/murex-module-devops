@@ -1,0 +1,81 @@
+summary terraform "Write, Plan, and Create Infrastructure as Code"
+
+autocomplete set terraform {
+    [
+        {
+            "Dynamic": ({
+                terraform -> @[Common commands:..]se -> !regexp 'm/^(All other commands:|)$' -> [ :0 ]
+            }),
+            "FlagValues": {
+                "state": [{
+                    "Dynamic": ({
+                        terraform: state -> @[Subcommands:...]se -> [ :0 ]
+                    })
+                }],
+                "workspace": [{
+                    "Flags": [ "delete", "list", "new", "select", "show" ]
+                }]
+            }
+        }
+    ]
+}
+
+func terraform_get {
+    # Download and install a preferred version of Terraform. Params: [0-9]+\.[0-9]+
+   
+    trypipe {
+        params -> [1] -> set ver
+        getfile https://releases.hashicorp.com/terraform/0.$ver/terraform_0.${$ver}_${os}_${cpuarch}.zip ->> $DEVOPSVERSIONED/deleteme.zip
+        unzip $DEVOPSVERSIONED/deleteme.zip -d $d
+        mv -i $DEVOPSVERSIONED/terraform $DEVOPSVERSIONED/terraform_0.$ver
+        rm $DEVOPSVERSIONED/deleteme.zip
+        #ls -l @{g $DEVOPSVERSIONED/terraform_*}
+
+        terraform_switch $ver
+    }
+}
+
+autocomplete set terraform_switch { [{
+    "Dynamic": ({ g $DEVOPSVERSIONED/terraform_0.* -> regexp 'f/terraform_0\.([0-9]+\.[0-9]+)$/' -> format str -> sort -Vr })
+}] }
+
+func terraform_switch {
+    # Switches Terraform binary versions (used when switching between older and newer Terraform states/scripts)
+    params -> [1] -> set ver
+
+    if {g: $DEVOPSVERSIONED/terraform_0.$ver} then {
+        params -> [1] -> set ver
+        unlink <!null> $DEVOPSBIN/terraform
+        ln -sv $DEVOPSVERSIONED/terraform_0.$ver $DEVOPSBIN/terraform
+    } else {
+        err "That version doesn't exist. If version number is not a typo then please use `terraform_get` to download it."
+    }
+}
+
+
+
+#func workspace {
+#    # Initializes the Terraform workspace
+#    try {
+#        out "{YELLOW}Checking AWS session token...{RESET}"
+#        and { $AWS_SESSION_TOKEN } { $AWS_SESSION_EXPIRATION } { = ((${date -d $AWS_SESSION_EXPIRATION +%s}-${date +%s})/60) > 10 }
+#        #err "Please rerun `awscon`"
+#        #return 1
+#        
+#        out "{YELLOW}Checking SSH agent...{RESET}"
+#        if { $SSH_AGENT_PID } else {
+#            agent
+#        }
+#
+#        out "{YELLOW}Initializing Terraform...{RESET}"
+#        terraform: init
+#
+#        out "{YELLOW}Selecting workspace '$USER'...{RESET}"
+#        if { terraform: workspace new $USER } else {
+#            terraform: workspace select $USER
+#        }
+#
+#    }; catch {
+#        err "Failed to initialize you workspace"
+#    }
+#}

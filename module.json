@@ -1,0 +1,36 @@
+[
+    {
+        "Name": "global",
+        "Summary": "Provides global parameters for the rest of the modules in this package",
+        "Version": "1.0",
+        "Source": "global.mx",
+        "Dependencies": {
+            "Optional": [],
+            "Required": [],
+            "Platform": [
+                "posix"
+            ]
+        }
+    },
+    {
+        "Name": "terraform",
+        "Summary": "Provides useful functions for working with terraform",
+        "Version": "1.0",
+        "Source": "terraform.mx",
+        "Dependencies": {
+            "Optional": [],
+            "Required": [
+                "getfile",
+                "unzip",
+                "sort",
+                "ln",
+                "unlink",
+                "os",
+                "cpuarch"
+            ],
+            "Platform": [
+                "posix"
+            ]
+        }
+    }
+]
