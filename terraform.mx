@@ -26,7 +26,7 @@ func terraform_get {
     trypipe {
         params -> [1] -> set ver
         getfile https://releases.hashicorp.com/terraform/0.$ver/terraform_0.${$ver}_${os}_${cpuarch}.zip ->> $DEVOPSVERSIONED/deleteme.zip
-        unzip $DEVOPSVERSIONED/deleteme.zip -d $d
+        unzip $DEVOPSVERSIONED/deleteme.zip -d $DEVOPSVERSIONED
         mv -i $DEVOPSVERSIONED/terraform $DEVOPSVERSIONED/terraform_0.$ver
         rm $DEVOPSVERSIONED/deleteme.zip
         #ls -l @{g $DEVOPSVERSIONED/terraform_*}
