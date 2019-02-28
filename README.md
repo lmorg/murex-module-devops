@@ -52,7 +52,7 @@ it is just as readable:
         }
 
         func plan {
-            # Runs a .terraform plan. -c / --clean to remove .terraform directory and plan from a clean init
+            # Runs a Terraform plan. -c / --clean to remove .terraform directory and plan from a clean init
             try {
                 args args {
                     "AllowAdditional": false,
@@ -77,5 +77,9 @@ it is just as readable:
             "Flags": [ "--clean" ]
         }] }
 
-        alias apply=terraform apply
+        func apply {
+            # Runs a Terraform get to sync modules before applying the config
+            terraform get
+            terraform apply
+        }
     }
