@@ -15,7 +15,7 @@
     {
         "Name": "terraform",
         "Summary": "Provides useful functions for working with terraform",
-        "Version": "1.1",
+        "Version": "1.2",
         "Source": "terraform.mx",
         "Dependencies": {
             "Optional": [],
@@ -26,7 +26,8 @@
                 "ln",
                 "unlink",
                 "os",
-                "cpuarch"
+                "cpuarch",
+                "rm"
             ],
             "Platform": [
                 "posix"
