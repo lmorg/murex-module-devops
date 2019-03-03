@@ -24,7 +24,7 @@ func terraform_get {
     # Download and install a preferred version of Terraform. Params: [0-9]+\.[0-9]+
    
     trypipe {
-        params -> [1] -> set ver
+        $ARGS[1] -> set ver
         getfile https://releases.hashicorp.com/terraform/0.$ver/terraform_0.${$ver}_${os}_${cpuarch}.zip ->> $DEVOPSVERSIONED/deleteme.zip
         unzip $DEVOPSVERSIONED/deleteme.zip -d $d
         mv -i $DEVOPSVERSIONED/terraform $DEVOPSVERSIONED/terraform_0.$ver
@@ -41,15 +41,16 @@ autocomplete set terraform_switch { [{
 
 func terraform_switch {
     # Switches Terraform binary versions (used when switching between older and newer Terraform states/scripts)
-    params -> [1] -> set ver
+    trypipe {
+	    $ARGS[1] -> set ver
 
-    if {g: $DEVOPSVERSIONED/terraform_0.$ver} then {
-        params -> [1] -> set ver
-        unlink <!null> $DEVOPSBIN/terraform
-        ln -sv $DEVOPSVERSIONED/terraform_0.$ver $DEVOPSBIN/terraform
-    } else {
-        err "That version doesn't exist. If version number is not a typo then please use `terraform_get` to download it."
-    }
+	    if {g: $DEVOPSVERSIONED/terraform_0.$ver} then {
+	        unlink <!null> $DEVOPSBIN/terraform
+	        ln -sv $DEVOPSVERSIONED/terraform_0.$ver $DEVOPSBIN/terraform
+	    } else {
+	        err "That version doesn't exist. If version number is not a typo then please use `terraform_get` to download it."
+	    }
+	}
 }
 
 

@@ -15,7 +15,7 @@
     {
         "Name": "terraform",
         "Summary": "Provides useful functions for working with terraform",
-        "Version": "1.0",
+        "Version": "1.1",
         "Source": "terraform.mx",
         "Dependencies": {
             "Optional": [],
