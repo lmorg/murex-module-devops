@@ -20,13 +20,13 @@ autocomplete set terraform {
     ]
 }
 
-func terraform_get {
+func terraform-get {
     # Download and install a preferred version of Terraform. Params: [0-9]+\.[0-9]+
    
     trypipe {
         $ARGS[1] -> set ver
         getfile https://releases.hashicorp.com/terraform/0.$ver/terraform_0.${$ver}_${os}_${cpuarch}.zip ->> $DEVOPSVERSIONED/deleteme.zip
-        unzip $DEVOPSVERSIONED/deleteme.zip -d $d
+        unzip $DEVOPSVERSIONED/deleteme.zip -d $DEVOPSVERSIONED
         mv -i $DEVOPSVERSIONED/terraform $DEVOPSVERSIONED/terraform_0.$ver
         rm $DEVOPSVERSIONED/deleteme.zip
         #ls -l @{g $DEVOPSVERSIONED/terraform_*}
@@ -39,7 +39,7 @@ autocomplete set terraform_switch { [{
     "Dynamic": ({ g $DEVOPSVERSIONED/terraform_0.* -> regexp 'f/terraform_0\.([0-9]+\.[0-9]+)$/' -> format str -> sort -Vr })
 }] }
 
-func terraform_switch {
+func terraform-switch {
     # Switches Terraform binary versions (used when switching between older and newer Terraform states/scripts)
     trypipe {
 	    $ARGS[1] -> set ver
@@ -80,3 +80,46 @@ func terraform_switch {
 #        err "Failed to initialize you workspace"
 #    }
 #}
+
+
+func env-tf {
+    # Sets some lazy shortcut functions for working with Terraform
+
+    func init {
+        # Remove existing .terraform directory and run `terraform init`
+        rm -rf .terraform
+        terraform init
+    }
+
+    func plan {
+        # Runs a Terraform plan. -c / --clean to remove .terraform directory and plan from a clean init
+        try {
+            args args {
+                "AllowAdditional": false,
+                "Flags": {
+                    "--clean": "bool",
+                    "-c": "--clean"
+                }
+            }
+
+            if { $args[Flags]->[--clean] } then {
+                init
+ 
+            } else {
+                terraform get
+            }
+        
+            terraform plan
+        }
+    }
+
+    autocomplete set plan { [{
+        "Flags": [ "--clean" ]
+    }] }
+
+    func apply {
+        # Runs a Terraform get to sync modules before applying the config
+        terraform get
+        terraform apply
+    }
+}
