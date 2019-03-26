@@ -19,19 +19,19 @@ This downloads and installs a specific version of Terraform.
 
 Example usage:
 
-    terraform_get 11.0
+    terraform-get 11.0
     
 ### `terraform-switch`
 
 This switches to a different version of Terraform, providing you've already
-downloaded it using the `terraform_get` tool above.
+downloaded it using the `terraform-get` tool above.
 
 Example useage:
 
-    terraform_switch 11.0
+    terraform-switch 11.0
     
-You do not require manually running a `terraform_switch` after running
-`terraform_get`.
+You do not require manually running a `terraform-switch` after running
+`terraform-get`.
 
 ### `env-tf`
 

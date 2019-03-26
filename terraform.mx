@@ -31,11 +31,11 @@ func terraform-get {
         rm $DEVOPSVERSIONED/deleteme.zip
         #ls -l @{g $DEVOPSVERSIONED/terraform_*}
 
-        terraform_switch $ver
+        terraform-switch $ver
     }
 }
 
-autocomplete set terraform_switch { [{
+autocomplete set terraform-switch { [{
     "Dynamic": ({ g $DEVOPSVERSIONED/terraform_0.* -> regexp 'f/terraform_0\.([0-9]+\.[0-9]+)$/' -> format str -> sort -Vr })
 }] }
 
@@ -48,7 +48,7 @@ func terraform-switch {
 	        unlink <!null> $DEVOPSBIN/terraform
 	        ln -sv $DEVOPSVERSIONED/terraform_0.$ver $DEVOPSBIN/terraform
 	    } else {
-	        err "That version doesn't exist. If version number is not a typo then please use `terraform_get` to download it."
+	        err "That version doesn't exist. If version number is not a typo then please use `terraform-get` to download it."
 	    }
 	}
 }
