@@ -33,6 +33,9 @@ func terraform-get {
 
         terraform-switch $ver
     }
+    catch {
+        err "Something went wrong. You haven't been switched to $ARGS[1]"
+    }
 }
 
 autocomplete set terraform-switch { [{
@@ -41,16 +44,40 @@ autocomplete set terraform-switch { [{
 
 func terraform-switch {
     # Switches Terraform binary versions (used when switching between older and newer Terraform states/scripts)
-    trypipe {
-	    $ARGS[1] -> set ver
 
-	    if {g: $DEVOPSVERSIONED/terraform_0.$ver} then {
-	        unlink <!null> $DEVOPSBIN/terraform
-	        ln -sv $DEVOPSVERSIONED/terraform_0.$ver $DEVOPSBIN/terraform
-	    } else {
-	        err "That version doesn't exist. If version number is not a typo then please use `terraform-get` to download it."
-	    }
-	}
+    test define version {
+        "OutRegexp": "[0-9]+\\.[0-9]+",
+        "ExitNum": 0
+    }
+
+    test define tfverexists {
+        "ExitNum": 0
+    }
+
+    test define tfexists {
+        "ExitNum": 0
+    }
+
+    test define symlink {
+        "ErrRegexp": "",
+        "ExitNum": 0
+    }
+
+    test define unlink {
+        "ExitNum": 0
+    }
+
+    trypipe {
+        $ARGS -> [ <test_version> 1 ] -> set ver
+
+        if {g: <test_tfverexists> $DEVOPSVERSIONED/terraform_0.$ver} then {
+            !if {g: <test_tfexists> $DEVOPSBIN/terraform} else { unlink <!null> <test_unlink> $DEVOPSBIN/terraform } 
+            ln <test_symlink> -sv $DEVOPSVERSIONED/terraform_0.$ver $DEVOPSBIN/terraform
+            murex-update-exe-list
+        } else {
+            err "That version doesn't exist. If version number is not a typo then please use `terraform-get` to download it."
+        }
+    }
 }
 
 
