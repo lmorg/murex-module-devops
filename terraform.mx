@@ -38,10 +38,6 @@ func terraform-get {
     }
 }
 
-autocomplete set terraform-switch { [{
-    "Dynamic": ({ g $DEVOPSVERSIONED/terraform_0.* -> regexp 'f/terraform_0\.([0-9]+\.[0-9]+)$/' -> format str -> sort -Vr })
-}] }
-
 func terraform-switch {
     # Switches Terraform binary versions (used when switching between older and newer Terraform states/scripts)
 
@@ -71,7 +67,7 @@ func terraform-switch {
         $ARGS -> [ <test_version> 1 ] -> set ver
 
         if {g: <test_tfverexists> $DEVOPSVERSIONED/terraform_0.$ver} then {
-            !if {g: <test_tfexists> $DEVOPSBIN/terraform} else { unlink <!null> <test_unlink> $DEVOPSBIN/terraform } 
+            if {g: <test_tfexists> $DEVOPSBIN/terraform} then { unlink <!null> <test_unlink> $DEVOPSBIN/terraform } 
             ln <test_symlink> -sv $DEVOPSVERSIONED/terraform_0.$ver $DEVOPSBIN/terraform
             murex-update-exe-list
         } else {
@@ -80,6 +76,9 @@ func terraform-switch {
     }
 }
 
+autocomplete set terraform-switch { [{
+    "Dynamic": ({ g $DEVOPSVERSIONED/terraform_0.* -> regexp 'f/terraform_0\.([0-9]+\.[0-9]+)$/' -> format str -> sort -Vr })
+}] }
 
 
 #func workspace {
