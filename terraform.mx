@@ -42,7 +42,7 @@ func terraform-switch {
     # Switches Terraform binary versions (used when switching between older and newer Terraform states/scripts)
 
     test define version {
-        "OutRegexp": "[0-9]+\\.[0-9]+",
+        "StdoutRegex": "[0-9]+\\.[0-9]+",
         "ExitNum": 0
     }
 
@@ -55,7 +55,7 @@ func terraform-switch {
     }
 
     test define symlink {
-        "ErrRegexp": "",
+        "StderrRegex": "^$",
         "ExitNum": 0
     }
 
