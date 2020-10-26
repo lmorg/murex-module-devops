@@ -1,25 +1,3 @@
-summary terraform "Write, Plan, and Create Infrastructure as Code"
-
-autocomplete set terraform {
-    [
-        {
-            "Dynamic": ({
-                terraform -> @[Common commands:..]se -> !regexp 'm/^(All other commands:|)$' -> [ :0 ]
-            }),
-            "FlagValues": {
-                "state": [{
-                    "Dynamic": ({
-                        terraform: state -> @[Subcommands:...]se -> [ :0 ]
-                    })
-                }],
-                "workspace": [{
-                    "Flags": [ "delete", "list", "new", "select", "show" ]
-                }]
-            }
-        }
-    ]
-}
-
 func terraform-get {
     # Download and install a preferred version of Terraform. Params: [0-9]+\.[0-9]+
    
