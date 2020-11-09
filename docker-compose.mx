@@ -1,0 +1,32 @@
+if { which docker-compose } then {
+    function autocomplete.docker-compose.services {
+        open docker-compose.yaml -> [ services ] -> formap k v { out "$k" } -> cast str
+    }
+
+    function autocomplete.docker-compose.FlagValues {
+        docker-compose: help -> @[Commands:..]se -> [:0] -> foreach flag {
+            ("$flag": [{
+                "FlagsDesc": ${ docker-compose help $flag -> tabulate --map --split-comma },
+                "AllowMultiple": true)
+        
+            if {
+                a build,create,events,exec,kill,logs,pause,pull,push,restart,run,scale,start,stop,top,unpause,up -> regexp m/^$flag$/
+            } then {
+                (,
+                "Dynamic": ({ autocomplete.docker-compose.services }))
+            }
+            out "\n}],"
+        }
+        out ("": [{}])
+    }
+
+    function autocomplete.docker-compose.FlagsDesc {
+        docker-compose help -> tabulate: --map --split-comma
+    }
+
+    autocomplete set docker-compose "[{
+        \"FlagsDesc\": ${ autocomplete.docker-compose.FlagsDesc },
+        \"FlagValues\": { ${ autocomplete.docker-compose.FlagValues } },
+        \"ListView\": true
+    }]"
+}
