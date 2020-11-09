@@ -1,9 +1,9 @@
 if { which docker-compose } then {
-    function autocomplete.docker-compose.services {
+    private autocomplete.docker-compose.services {
         open docker-compose.yaml -> [ services ] -> formap k v { out "$k" } -> cast str
     }
 
-    function autocomplete.docker-compose.FlagValues {
+    private autocomplete.docker-compose.FlagValues {
         docker-compose: help -> @[Commands:..]se -> [:0] -> foreach flag {
             ("$flag": [{
                 "FlagsDesc": ${ docker-compose help $flag -> tabulate --map --split-comma },
@@ -20,7 +20,7 @@ if { which docker-compose } then {
         out ("": [{}])
     }
 
-    function autocomplete.docker-compose.FlagsDesc {
+    private autocomplete.docker-compose.FlagsDesc {
         docker-compose help -> tabulate: --map --split-comma
     }
 
