@@ -10,8 +10,7 @@ This sets global variables which are required for the other modules
 
 ## terraform
 
-This provides autocompletion for Hashicorp's Terraform plus a few additional
-helper functions for working with Terraform:
+This provides additional helper functions for working with Terraform:
 
 ### `terraform-get`
 
@@ -83,3 +82,10 @@ it is just as readable:
             terraform apply
         }
     }
+
+## docker-compose
+
+This provides autocompletion for docker-compose. It's not part of the base
+install of _murex_ because it adds considerably to the start up time of
+_murex_ to get around any sluggishness with calling `docker-compose` on the
+fly.
