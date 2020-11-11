@@ -1,4 +1,4 @@
-func terraform-get {
+function terraform-get {
     # Download and install a preferred version of Terraform. Params: [0-9]+\.[0-9]+
    
     trypipe {
@@ -16,7 +16,7 @@ func terraform-get {
     }
 }
 
-func terraform-switch {
+function terraform-switch {
     # Switches Terraform binary versions (used when switching between older and newer Terraform states/scripts)
 
     test define version {
@@ -59,7 +59,7 @@ autocomplete set terraform-switch { [{
 }] }
 
 
-#func workspace {
+#function workspace {
 #    # Initializes the Terraform workspace
 #    try {
 #        out "{YELLOW}Checking AWS session token...{RESET}"
@@ -86,16 +86,16 @@ autocomplete set terraform-switch { [{
 #}
 
 
-func env-tf {
+function env-tf {
     # Sets some lazy shortcut functions for working with Terraform
 
-    func init {
+    function init {
         # Remove existing .terraform directory and run `terraform init`
         rm -rf .terraform
         terraform init
     }
 
-    func plan {
+    function plan {
         # Runs a Terraform plan. -c / --clean to remove .terraform directory and plan from a clean init
         try {
             args args {
@@ -121,7 +121,7 @@ func env-tf {
         "Flags": [ "--clean" ]
     }] }
 
-    func apply {
+    function apply {
         # Runs a Terraform get to sync modules before applying the config
         terraform get
         terraform apply
