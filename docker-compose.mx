@@ -6,7 +6,7 @@ if { which docker-compose } then {
     private autocomplete.docker-compose.FlagValues {
         docker-compose: help -> @[Commands:..]se -> [:0] -> foreach flag {
             ("$flag": [{
-                "FlagsDesc": ${ docker-compose help $flag -> tabulate --map --split-comma },
+                "FlagsDesc": ${ docker-compose help $flag -> tabulate --map --column-wraps --split-comma --key-inc-hint },
                 "AllowMultiple": true)
         
             if {
@@ -21,7 +21,7 @@ if { which docker-compose } then {
     }
 
     private autocomplete.docker-compose.FlagsDesc {
-        docker-compose help -> tabulate: --map --split-comma
+        docker-compose help -> tabulate: --map --column-wraps --split-comma --key-inc-hint
     }
 
     autocomplete set docker-compose "[{
