@@ -1,11 +1,11 @@
 function terraform-get {
-    # Download and install a preferred version of Terraform. Params: [0-9]+\.[0-9]+
+    # Download and install a preferred version of Terraform. Params: [0-9]+\.[0-9]+\.[0-9]+
    
     trypipe {
         $ARGS[1] -> set ver
-        getfile https://releases.hashicorp.com/terraform/0.$ver/terraform_0.${$ver}_${os}_${cpuarch}.zip ->> $DEVOPSVERSIONED/deleteme.zip
+        getfile https://releases.hashicorp.com/terraform/$ver/terraform_${$ver}_${os}_${cpuarch}.zip ->> $DEVOPSVERSIONED/deleteme.zip
         unzip $DEVOPSVERSIONED/deleteme.zip -d $DEVOPSVERSIONED
-        mv -i $DEVOPSVERSIONED/terraform $DEVOPSVERSIONED/terraform_0.$ver
+        mv -i $DEVOPSVERSIONED/terraform $DEVOPSVERSIONED/terraform_$ver
         rm $DEVOPSVERSIONED/deleteme.zip
         #ls -l @{g $DEVOPSVERSIONED/terraform_*}
 
@@ -20,7 +20,7 @@ function terraform-switch {
     # Switches Terraform binary versions (used when switching between older and newer Terraform states/scripts)
 
     test define version {
-        "StdoutRegex": "[0-9]+\\.[0-9]+",
+        "StdoutRegex": "[0-9]+\.[0-9]+\\.[0-9]+",
         "ExitNum": 0
     }
 
@@ -44,9 +44,9 @@ function terraform-switch {
     trypipe {
         $ARGS -> [ <test_version> 1 ] -> set ver
 
-        if {g: <test_tfverexists> $DEVOPSVERSIONED/terraform_0.$ver} then {
+        if {g: <test_tfverexists> $DEVOPSVERSIONED/terraform_$ver} then {
             if {g: <test_tfexists> $DEVOPSBIN/terraform} then { unlink <!null> <test_unlink> $DEVOPSBIN/terraform } 
-            ln <test_symlink> -sv $DEVOPSVERSIONED/terraform_0.$ver $DEVOPSBIN/terraform
+            ln <test_symlink> -sv $DEVOPSVERSIONED/terraform_$ver $DEVOPSBIN/terraform
             murex-update-exe-list
         } else {
             err "That version doesn't exist. If version number is not a typo then please use `terraform-get` to download it."
@@ -55,7 +55,7 @@ function terraform-switch {
 }
 
 autocomplete set terraform-switch { [{
-    "Dynamic": ({ g $DEVOPSVERSIONED/terraform_0.* -> regexp 'f/terraform_0\.([0-9]+\.[0-9]+)$/' -> format str -> sort -Vr })
+    "Dynamic": ({ g $DEVOPSVERSIONED/terraform_.* -> regexp 'f/terraform_([0-9]+\.[0-9]+\.[0-9]+)$/' -> format str -> sort -Vr })
 }] }
 
 
