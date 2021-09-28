@@ -3,6 +3,32 @@ function awsume {
         awsumepy: @{ $ARGS->@[1..]n } -> set generic envs
         
         switch $envs[:0] {
+            case "Kill" {
+                unset AWS_ACCESS_KEY_ID
+                unset AWS_SECRET_ACCESS_KEY
+                unset AWS_SESSION_TOKEN
+                unset AWS_REGION
+                unset AWS_DEFAULT_REGION
+                unset AWS_PROFILE
+                unset AWS_DEFAULT_PROFILE
+                unset AWSUME_EXPIRATION
+                unset AWSUME_PROFILE
+                unset AWSUME_COMMAND
+            }
+            case "Stop" {
+                if { = AWS_PROFILE==`auto-refresh-$envs[:1]` } then {
+                    unset AWS_ACCESS_KEY_ID
+                    unset AWS_SECRET_ACCESS_KEY
+                    unset AWS_SESSION_TOKEN
+                    unset AWS_REGION
+                    unset AWS_DEFAULT_REGION
+                    unset AWS_PROFILE
+                    unset AWS_DEFAULT_PROFILE
+                    unset AWSUME_EXPIRATION
+                    unset AWSUME_PROFILE
+                    unset AWSUME_COMMAND
+                }
+            }
             case "Awsume" {
                 unset AWS_ACCESS_KEY_ID
                 unset AWS_SECRET_ACCESS_KEY
@@ -27,7 +53,7 @@ function awsume {
             }
 
             catch {
-                err: "Something went wrong!"
+                out: $envs
             }
         }
     }
