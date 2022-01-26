@@ -50,6 +50,13 @@ function awsume {
                 export AWS_PROFILE=$envs[:6]
                 export AWS_DEFAULT_PROFILE=$envs[:6]
                 export AWSUME_EXPIRATION=$envs[:7]
+
+		if { = `$AWS_PROFILE`==`None` } then {
+			export AWS_PROFILE=$AWSUME_PROFILE
+		}
+		if { = `$AWS_DEFAULT_PROFILE`==`None` } then {
+			export AWS_DEFAULT_PROFILE=$AWSUME_PROFILE
+		}
             }
 
             catch {
