@@ -54,7 +54,7 @@
     {
         "Name": "docker-compose",
         "Summary": "Provides more detailed autocomplete suggestions for docker-compose",
-        "Version": "1.2",
+        "Version": "1.3",
         "Source": "docker-compose.mx",
         "Dependencies": {
             "Optional": [],

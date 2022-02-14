@@ -26,9 +26,12 @@ if { which docker-compose } then {
         docker-compose help -> tabulate: --map --column-wraps --split-comma --key-inc-hint
     }
 
-    autocomplete set docker-compose "[{
-        \"FlagsDesc\": ${ autocomplete.docker-compose.FlagsDesc },
-        \"FlagValues\": { ${ autocomplete.docker-compose.FlagValues } },
-        \"ListView\": true
-    }]"
+
+    bg {
+        autocomplete set docker-compose "[{
+            \"FlagsDesc\": ${ autocomplete.docker-compose.FlagsDesc },
+            \"FlagValues\": { ${ autocomplete.docker-compose.FlagValues } },
+            \"ListView\": true
+        }]"
+    }
 }
