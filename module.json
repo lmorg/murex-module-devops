@@ -65,5 +65,22 @@
                 "posix"
             ]
         }
+    },
+    {
+        "Name": "secret",
+        "Summary": "Provides more detailed autocomplete suggestions for docker-compose",
+        "Version": "1.0",
+        "Source": "secret.mx",
+        "Dependencies": {
+            "Optional": [],
+            "Required": [
+                "gpg",
+		"base64",
+		"tr"
+            ],
+            "Platform": [
+                "posix"
+            ]
+        }
     }
 ]
