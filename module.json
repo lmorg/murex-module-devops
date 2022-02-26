@@ -37,7 +37,7 @@
     {
         "Name": "awsume",
         "Summary": "Provides a wrapper around `awsumepy` -- awsume's Python library for signing into AWS",
-        "Version": "1.0",
+        "Version": "1.1",
         "Source": "awsume.mx",
         "Dependencies": {
             "Optional": [

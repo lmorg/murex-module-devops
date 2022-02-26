@@ -1,4 +1,6 @@
 function awsume {
+    # Grabs your access tokens for AWS
+    
     trypipe {
         awsumepy: @{ $ARGS->@[1..]n } -> set generic envs
         
@@ -69,6 +71,7 @@ function awsume {
 alias awscon=awsume
 
 private autocomplete.asumepy {
+    # Autocompletion flags for `asumepy`
     awsumepy: -h -> @[optional arguments:..]s -> tabulate: --map --column-wraps --split-comma --key-inc-hint
 }
 
@@ -86,24 +89,28 @@ test unit private autocomplete.asumepy {
 }
 
 private autocomplete.awscon {
-    trypipe {
-        open terraform.tfvars -> [ aws_account_id ] -> set accid
-        grep $accid ~/.aws/config -n -> regexp 'f/(^[0-9]+)' -> set int line
-        let line=line-3
-        cat ~/.aws/config -> @[$line..$line]n -> regexp 'f/^\[profile (.*?)\]/'
-    }; catch {
-        cat ~/.aws/config -> regexp 'f/^\[profile (.*?)\]/' -> sort
-    }
+    # Inspect ~/.aws/config for profiles to add to `awsume`'s autocompletion
+
+    #trypipe {
+    #    open terraform.tfvars -> [ aws_account_id ] -> set accid
+    #    grep $accid ~/.aws/config -n -> regexp 'f/(^[0-9]+)' -> set int line
+    #    let line=line-3
+    #    cat ~/.aws/config -> @[$line..$line]n -> regexp 'f/^\[profile (.*?)\]/'
+    #}; catch {
+        cat ~/.aws/config -> regexp 'f/^\[profile (.*?)\]/' -> sort -> cast str
+    #}
 }
 
 test unit private autocomplete.awscon {
-    "StdoutType": "*",
+    "StdoutType": "str",
     "StdoutBlock": ({
-        -> len -> set len;
-        if { = len>0 } then {
-            out "Len greater than 0"
-        } else {
-            err "No elements returned"
+        if { g: ~/.aws/config } then {
+            <stdin> -> len -> set len;
+            if { = len>0 } then {
+                out "Len greater than 0"
+            } else {
+                err "No elements returned"
+            }
         }
     }),
     "StdoutIsArray": true
