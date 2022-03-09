@@ -47,6 +47,7 @@ function terraform-switch {
         if {g: <test_tfverexists> $DEVOPSVERSIONED/terraform_$ver} then {
             if {g: <test_tfexists> $DEVOPSBIN/terraform} then { unlink <!null> <test_unlink> $DEVOPSBIN/terraform } 
             ln <test_symlink> -sv $DEVOPSVERSIONED/terraform_$ver $DEVOPSBIN/terraform
+            global: TF_VERSION=$ver
             murex-update-exe-list
         } else {
             err "That version doesn't exist. If version number is not a typo then please use `terraform-get` to download it."
@@ -55,7 +56,7 @@ function terraform-switch {
 }
 
 autocomplete set terraform-switch { [{
-    "Dynamic": ({ g $DEVOPSVERSIONED/terraform_.* -> regexp 'f/terraform_([0-9]+\.[0-9]+\.[0-9]+)$/' -> format str -> sort -Vr })
+    "Dynamic": ({ g $DEVOPSVERSIONED/terraform_* -> regexp 'f/terraform_([0-9]+\.[0-9]+\.[0-9]+)$/' -> format str -> sort -Vr })
 }] }
 
 
