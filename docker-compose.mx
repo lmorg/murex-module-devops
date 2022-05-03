@@ -5,9 +5,9 @@ if { which docker-compose } then {
 
     private autocomplete.docker-compose.FlagValues {
         # A helper function to generate autocomplete config for docker-compose
-        docker-compose: help -> @[Commands:..]se -> [:0] -> foreach flag {
+        docker-compose: --help -> @[Commands:..]se -> [:0] -> foreach flag {
             ("$flag": [{
-                "FlagsDesc": ${ docker-compose help $flag -> tabulate --map --column-wraps --split-comma --key-inc-hint },
+                "FlagsDesc": ${ docker-compose --help $flag -> tabulate --map --column-wraps --split-comma --key-inc-hint },
                 "AllowMultiple": true)
         
             if {
@@ -23,7 +23,7 @@ if { which docker-compose } then {
 
     private autocomplete.docker-compose.FlagsDesc {
         # Runs docker-compose to query it's command line flags
-        docker-compose help -> tabulate: --map --column-wraps --split-comma --key-inc-hint
+        docker-compose --help -> tabulate: --map --column-wraps --split-comma --key-inc-hint
     }
 
 

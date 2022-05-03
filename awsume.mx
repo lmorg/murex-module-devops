@@ -72,21 +72,24 @@ alias awscon=awsume
 
 private autocomplete.asumepy {
     # Autocompletion flags for `asumepy`
+
+    cast: json
+    config: set proc strict-arrays false
     awsumepy: -h -> @[optional arguments:..]s -> tabulate: --map --column-wraps --split-comma --key-inc-hint
 }
 
-test unit private autocomplete.asumepy {
-    "StdoutType": "json",
-    "StdoutBlock": ({
-        -> len -> set len;
-        if { = len>0 } then {
-            out "Len greater than 0"
-        } else {
-            err "No elements returned"
-        }
-    }),
-    "StdoutIsMap": true
-}
+#test unit private autocomplete.asumepy {
+#    "StdoutType": "json",
+#    "StdoutBlock": ({
+#        -> len -> set len;
+#        if { = len>0 } then {
+#            out "Len greater than 0"
+#        } else {
+#            err "No elements returned"
+#        }
+#    }),
+#    "StdoutIsMap": true
+#}
 
 private autocomplete.awscon {
     # Inspect ~/.aws/config for profiles to add to `awsume`'s autocompletion
