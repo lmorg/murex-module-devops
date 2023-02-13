@@ -69,7 +69,7 @@
     {
         "Name": "secret",
         "Summary": "Provides more detailed autocomplete suggestions for docker-compose",
-        "Version": "2.0",
+        "Version": "3.0",
         "Source": "secret.mx",
         "Dependencies": {
             "Optional": [],
