@@ -1,0 +1,92 @@
+
+private update-ssh-autocompelete {
+    runtime --autocomplete -> [[ /ssh/FlagValues ]] -> ac
+    $bob.0.Dynamic = ""
+}
+
+private ssh-hosts-file {
+    # Parse the hosts file and return uniq host names and IPs
+    
+    cat /etc/hosts               \
+    -> !regexp: 'm/^(#.*|\s*)$/' \
+    -> regexp: "s/[\s\t]+/\n/"   \
+    -> sort -> uniq -> cast: str \
+    -> prefix $1
+}
+
+private ssh-hosts-config {
+    # Parse ~/.ssh/config and return host names and IPs
+
+    cat ~/.ssh/config                     \
+    -> regexp 'f/Host\s([-.a-zA-Z0-9]+)/' \
+    -> cast: str                          \
+    -> prefix $1
+}
+
+private ssh-hosts-aws {
+    foreach-aws-profile { ec2-describe-instances -> :yaml: format json |> hosts-aws-$(AWS_PROFILE).json }
+}
+
+private ssh-hosts {
+    # prefixes getHostFile entries with $1 if that matches a `user@` pattern
+
+    cast json
+
+    if { $1 =~ '^[-_.a-zA-Z0-9]+@' } then {
+        $1 -> regexp 'f/(^[-_.a-zA-Z0-9]+@)' -> set prefix
+    } else {
+        prefix = ""
+    }
+
+    hosts = %{}
+
+    ssh-hosts-file $prefix \
+        -> foreach --jmap host { $host } { out "(/etc/hosts file entry)" } \
+        -> set ssh_hosts_file
+
+    ssh-hosts-config $prefix \
+        -> foreach --jmap host { $host } { out "(~/.ssh/config entry)" } \
+        -> set ssh_hosts_config
+
+    $AWS_HOSTS -> formap --jmap k v {
+        $k -> prefix $prefix
+    } { $v } -> set ssh_hosts_aws
+
+    hosts <~ $ssh_hosts_file
+    hosts <~ $ssh_hosts_config
+    hosts <~ $ssh_hosts_aws
+
+    out $hosts
+}
+
+function update-aws-hosts {
+    # Updates $AWS_HOSTS with every EC2 instance across every profile
+
+    GLOBAL.AWS_HOSTS = %{}
+
+    foreach-aws-profile {
+        ec2-describe-instances -> set hosts
+        GLOBAL.AWS_HOSTS <~ $hosts    
+    }
+}
+
+bg <!null> {
+    try { update-aws-hosts }
+}
+
+autocomplete set ssh %[
+    {
+        DynamicDesc: '{ ssh-hosts $PREFIX }',
+        IncManPage: true,
+        AllowAny: true,
+        FlagValues: {
+            "-i": [{ 
+                IncFiles: true
+            }],
+        },
+        ListView: true
+    },
+    {
+        Goto: "/0"
+    }
+]

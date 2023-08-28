@@ -1,4 +1,7 @@
 {
 	"Name": "devops",
-	"Version": "7.1"
+	"Version": "8.0",
+	"ChangeLog": {
+		"8.0": "added functions for working with AWS"
+	}
 }

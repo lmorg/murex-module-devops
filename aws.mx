@@ -1,0 +1,129 @@
+function aws {
+    # wrapper around AWS CLI to set JSON output and data type and read from profile
+    cast json
+
+    exec aws --output json --no-paginate --no-cli-pager --color auto @PARAMS
+
+    /#config: set proc strict-vars false
+    
+    if { $ENV.AWS_PROFILE == "" } then {
+        exec aws --output json                            --no-paginate --no-cli-pager --color auto @PARAMS
+    } else {
+        exec aws --output json --profile $ENV.AWS_PROFILE --no-paginate --no-cli-pager --color auto @PARAMS
+    }#/
+}
+
+function aws-list-profiles {
+    # list all AWS profiles stored in ~/.aws/config
+
+    cast json
+    cat ~/.aws/config -> :str: regexp 'f,\[profile (.*?)],' -> format json
+}
+
+function aws-read-config {
+    # reads ~/.aws/config and returns that the profiles as YAML
+
+    cast yaml
+
+    profile = ""
+
+    cat ~/.aws/config -> :str: foreach line {
+        switch {
+            case { $line =~ '\[profile .*?\]' } {
+                $line -> regexp 'f,\[profile (.*?)],' -> set profile
+                out "$(profile):"
+                }
+            
+            case { $line =~ '\[.*?\]' } {
+                profile = ""
+                }
+
+            default {
+                if { $profile == "" || $line !~ "=" } then { continue switch }
+                
+                $line -> regexp 'f/\s*(.*?)\s*=\s*(.*?)\s*$/' -> format json -> set kv
+                out %(    $(kv.0): "$(kv.1)")
+                }
+        }
+    }
+}
+
+/#function aws-acc-name {
+
+}#/
+
+function aws-switch-profile {
+    read --prompt "Please select which AWS profile: " \
+         --variable ENV.AWS_PROFILE \
+         --autocomplete ${aws-list-profiles}
+}
+
+function foreach-aws-profile {
+    aws-list-profiles -> foreach ENV.AWS_PROFILE $1
+}
+
+autocomplete set aws-global ${autocomplete get aws}
+
+function aws-global {
+    # behaves like `aws` except runs against all AWS profiles
+
+    cast json
+
+    merged = %{}
+
+    aws-list-profiles -> foreach ENV.AWS_PROFILE { 
+        merged <~ ${ aws @PARAMS }
+    }
+
+    $merged
+}
+
+function ec2-describe-instances {
+    aws ec2 describe-instances -> [Reservations] -> foreach --jmap res {
+        $res.Instances.0.NetworkInterfaces.0.PrivateIpAddress
+    } {
+        printf <!null> %(${@res.Instances.0.tags[{ $.Key=="Name" }] -> [[.0.Value]] || $res.Instances.0.InstanceId} on $AWS_PROFILE (${$res.Instances.0.State.Name}))
+    }
+}
+
+function ec2-tags {
+    cast json
+
+    <stdin> -> :json: foreach kv { out: "$kv.Key: $kv.Value"} -> sort -> :yaml: format json
+}
+
+function s3-du (
+    S3_BUCKET: str "Name of S3 bucket (and optional path): s3://"
+) {
+    cast str
+
+    aws s3 ls $S3_BUCKET \
+    -> :str: grep PRE \
+    -> [:1] \
+    -> !regexp 'm,^/$,' \
+    -> foreach prefix {
+        out "\n$(prefix)"
+        aws s3 ls --human-readable --recursive --summarize s3://$(S3_BUCKET)/$prefix \
+        -> grep Total
+    }
+}
+
+source aws_ssh.mx
+
+function aws-login {
+    try {
+        aws sso login
+        update-aws-hosts
+    }
+}
+
+function vm (
+    lookup: str "Lookup value for AWS host"
+) {
+    host = @AWS_HOSTS[{$.val =~ $lookup}]
+    switch ${$host|count} {
+        case 0 { err "no hosts found" }
+        case 1 { get-type \$host }
+        default { err "expecting 1 host. Instead got ${$host|count}" }
+    }
+}

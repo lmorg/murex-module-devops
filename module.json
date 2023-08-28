@@ -82,5 +82,22 @@
                 "posix"
             ]
         }
+    },
+    {
+        "Name": "aws",
+        "Summary": "Provides handy functions for working with AWS",
+        "Version": "1.0",
+        "Source": "aws.mx",
+        "Dependencies": {
+            "Optional": [],
+            "Required": [
+                "aws",
+                "printf",
+                "cat"
+            ],
+            "Platform": [
+                "posix"
+            ]
+        }
     }
 ]
