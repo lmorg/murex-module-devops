@@ -2,8 +2,9 @@
     {
         "Name": "global",
         "Summary": "Provides global parameters for the rest of the modules in this package",
-        "Version": "1.0",
+        "Version": "2.0",
         "Source": "global.mx",
+        "Preload": "global-preload.mx",
         "Dependencies": {
             "Optional": [],
             "Required": [],
@@ -20,14 +21,7 @@
         "Dependencies": {
             "Optional": [],
             "Required": [
-                "getfile",
-                "unzip",
-                "sort",
-                "ln",
-                "unlink",
-                "os",
-                "cpuarch",
-                "rm"
+                "unzip"
             ],
             "Platform": [
                 "posix"
@@ -75,8 +69,7 @@
             "Optional": [],
             "Required": [
                 "gpg",
-		"base64",
-		"tr"
+                "base64"
             ],
             "Platform": [
                 "posix"
@@ -91,9 +84,7 @@
         "Dependencies": {
             "Optional": [],
             "Required": [
-                "aws",
-                "printf",
-                "cat"
+                "aws"
             ],
             "Platform": [
                 "posix"

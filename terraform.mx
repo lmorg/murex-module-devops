@@ -3,7 +3,7 @@ function terraform-get {
    
     trypipe {
         $ARGS[1] -> set ver
-        getfile https://releases.hashicorp.com/terraform/$ver/terraform_${$ver}_${os}_${cpuarch}.zip ->> $DEVOPSVERSIONED/deleteme.zip
+        getfile https://releases.hashicorp.com/terraform/$ver/terraform_${$ver}_${os}_${cpuarch}.zip |> $DEVOPSVERSIONED/deleteme.zip
         unzip $DEVOPSVERSIONED/deleteme.zip -d $DEVOPSVERSIONED
         mv -i $DEVOPSVERSIONED/terraform $DEVOPSVERSIONED/terraform_$ver
         rm $DEVOPSVERSIONED/deleteme.zip
