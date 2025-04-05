@@ -29,23 +29,6 @@
         }
     },
     {
-        "Name": "awsume",
-        "Summary": "Provides a wrapper around `awsumepy` -- awsume's Python library for signing into AWS",
-        "Version": "1.1",
-        "Source": "awsume.mx",
-        "Dependencies": {
-            "Optional": [
-                "awsume"
-            ],
-            "Required": [
-                "awsumepy"
-            ],
-            "Platform": [
-                "posix"
-            ]
-        }
-    },
-    {
         "Name": "docker-compose",
         "Summary": "Provides more detailed autocomplete suggestions for docker-compose",
         "Version": "1.3",
