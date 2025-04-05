@@ -1,7 +1,8 @@
 {
 	"Name": "devops",
-	"Version": "8.0",
+	"Version": "9.0",
 	"ChangeLog": {
-		"8.0": "added functions for working with AWS"
+		"8.0": "added functions for working with AWS",
+		"9.0": "add preload to global and remove awesume module"
 	}
 }
